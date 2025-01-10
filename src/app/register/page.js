@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 import { useRouter } from "next/navigation";
+import styles from './page.module.css';
 
 const Register = () => {
     const [email, setEmail] = useState("");
@@ -33,33 +34,43 @@ const Register = () => {
             });
     };
 
+    const handleBack = () => {
+        router.push("/");  // Voltar à página inicial
+    };
+
     return (
-        <div>
-            <h2>Registar</h2>
-            <form onSubmit={handleRegister}>
-                <input
-                    type="text"
-                    placeholder="Nome"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button type="submit">Registar</button>
-            </form>
+        <div className={styles.container}>
+            <div className={styles.form}>
+                <h2 className={styles.title}>Registar</h2>
+                <form onSubmit={handleRegister} className={styles.formContent}>
+                    <input
+                        type="text"
+                        placeholder="Nome"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className={styles.input}
+                    />
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className={styles.input}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Senha"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className={styles.input}
+                    />
+                    <button type="submit" className={styles.submitButton}>Registar</button>
+                    <button type="button" className={styles.backButton} onClick={handleBack}>Voltar à Página Inicial</button>
+                </form>
+            </div>
         </div>
     );
 };

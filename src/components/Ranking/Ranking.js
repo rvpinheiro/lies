@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { getDatabase, ref, onChildAdded, onChildChanged } from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 import styles from './Ranking.module.css';
@@ -10,37 +10,25 @@ const Ranking = () => {
     const [ranking, setRanking] = useState([]);
 
     useEffect(() => {
-        const liarCounts = {};
-
         const db = getDatabase();
-        const liesRef = ref(db, "lies");
+        const usersRef = ref(db, "users");  // Escutar o nó de utilizadores
 
-        const handleNewLie = (snapshot) => {
-            const lie = snapshot.val();
-            if (lie && lie.liar) {
-                liarCounts[lie.liar] = (liarCounts[lie.liar] || 0) + 1;
-                updateRanking();
-            }
-        };
+        const updateRanking = (usersSnapshot) => {
+            const liarCounts = [];
+            usersSnapshot.forEach((userSnapshot) => {
+                const userData = userSnapshot.val();
+                const liar = userData.name;
+                const liesCount = userData.liesCount || 0;  // Pega a contagem de mentiras (se existir)
+                liarCounts.push({ liar, count: liesCount });
+            });
 
-        const handleUpdatedLie = (snapshot) => {
-            const lie = snapshot.val();
-            if (lie && lie.liar) {
-                liarCounts[lie.liar] = (liarCounts[lie.liar] || 0) + 1;
-                updateRanking();
-            }
-        };
-
-        const updateRanking = () => {
-            const sortedLiarCounts = Object.entries(liarCounts)
-                .map(([liar, count]) => ({ liar, count }))
-                .sort((a, b) => b.count - a.count);
-
+            // Ordenar pelo número de mentiras de forma decrescente
+            const sortedLiarCounts = liarCounts.sort((a, b) => b.count - a.count);
             setRanking(sortedLiarCounts);
         };
 
-        onChildAdded(liesRef, handleNewLie);
-        onChildChanged(liesRef, handleUpdatedLie);
+        // Escutar mudanças no nó de utilizadores
+        onValue(usersRef, updateRanking);
 
         return () => {
             // Clean up listeners

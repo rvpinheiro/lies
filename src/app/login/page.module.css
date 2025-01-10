@@ -1,20 +1,93 @@
-/* src/app/login/Login.module.css */
-
+/* Contêiner principal */
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+/* Formulário */
+.form {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Título do formulário */
+.title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 30px;
+}
+
+/* Formulário em si */
+.formContent {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Estilo dos campos de input */
+.input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  font-size: 1rem;
+  color: #333;
+  background-color: #fafafa;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%; /* Garantir que os campos de input ocupem toda a largura */
+}
+
+.input:focus {
+  border-color: #4caf50;
+}
+
+/* Botões */
+.submitButton, .backButton {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+  width: 100%;  /* Garantir que os botões ocupem toda a largura */
+}
+
+.submitButton {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+.submitButton:hover {
+  background-color: #45a049;
+}
+
+.backButton {
+  background-color: #f5f5f5;
+  color: #333;
+  margin-top: 15px;
+}
+
+.backButton:hover {
+  background-color: #e0e0e0;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
   .form {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
+      padding: 1.5rem;
   }
-  
- 
+
+  .title {
+      font-size: 1.6rem;
+  }
+}

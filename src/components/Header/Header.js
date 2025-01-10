@@ -17,24 +17,23 @@ const Header = () => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 setIsLoggedIn(true);
-                checkIfAdmin(user.uid);  // Verifica se o utilizador é administrador
+                checkIfAdmin(user.uid);
             } else {
                 setIsLoggedIn(false);
-                setIsAdmin(false);  // Se o utilizador sair, é removido da função admin
+                setIsAdmin(false);
             }
         });
     }, []);
 
-    // Função para verificar se o utilizador é administrador
     const checkIfAdmin = async (uid) => {
         const db = getDatabase();
-        const adminsRef = ref(db, 'admins/' + uid);  // Verifica no nó 'admins' do Firebase
+        const adminsRef = ref(db, 'admins/' + uid);
 
         const snapshot = await get(adminsRef);
         if (snapshot.exists() && snapshot.val() === true) {
-            setIsAdmin(true);  // Se o utilizador for administrador, define como 'true'
+            setIsAdmin(true);
         } else {
-            setIsAdmin(false);  // Caso contrário, define como 'false'
+            setIsAdmin(false);
         }
     };
 
@@ -42,8 +41,8 @@ const Header = () => {
         const auth = getAuth();
         auth.signOut().then(() => {
             setIsLoggedIn(false);
-            setIsAdmin(false);  // Limpa o estado de admin no logout
-            router.push("/");  // Redireciona para a página inicial após logout
+            setIsAdmin(false);
+            router.push("/");
         }).catch((error) => {
             console.error("Erro ao sair:", error);
         });

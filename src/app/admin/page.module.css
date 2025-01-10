@@ -1,0 +1,166 @@
+/* Estilo geral da página */
+.adminPageContainer {
+    padding: 40px;
+    background-color: #f9f9f9;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Botão "Voltar à Página Inicial" */
+.goBackButton {
+    padding: 12px 20px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 30px;
+    margin-top: 30px;  /* Mais espaço em cima */
+    transition: background-color 0.3s ease;
+}
+
+.goBackButton:hover {
+    background-color: #0056b3;
+}
+
+/* Formulário de adicionar utilizador */
+.addUserContainer {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+.addUserContainer h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.inputField {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.inputField label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.inputField input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background-color: #fafafa;
+}
+
+.inputField input:focus {
+    border-color: #4CAF50;
+}
+
+.addUserButton {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.addUserButton:hover {
+    background-color: #45a049;
+}
+
+/* Tabela de utilizadores */
+.usersTable {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 30px;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.usersTable thead {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.usersTable th, .usersTable td {
+    padding: 12px;
+    text-align: left;
+    font-size: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.usersTable tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.usersTable tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.usersTable th {
+    font-weight: 500;
+}
+
+/* Botão "Remover" */
+.removeUserButton {
+    padding: 6px 12px;
+    background-color: #f44336;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.removeUserButton:hover {
+    background-color: #d32f2f;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .adminPageContainer {
+        padding: 20px;
+    }
+
+    .addUserContainer {
+        padding: 15px;
+    }
+
+    .inputField input {
+        padding: 10px;
+    }
+
+    .addUserButton {
+        padding: 10px 15px;
+    }
+
+    .usersTable th, .usersTable td {
+        font-size: 0.9rem;
+    }
+}

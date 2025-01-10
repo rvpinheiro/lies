@@ -1,19 +1,13 @@
 :root {
     --font-size-base: 16px;
-    
-    --text-primary-color:rgb(0, 0, 0);  
-    --text-secondary-color: #495057;  
-    --text-tertiary-color: #6c757d; 
-    
-    --background-color:rgba(199, 198, 198, 0.59);  
-    --background-secondary-color: #e9ecef;  
-    
-    --border-color: #dee2e6;  
-    
-    --button-background-color: #adb5bd;  
-    --button-text-color: #212529;  
-}
 
+    --color1: #000814;
+    --color2: #001D3D;
+    --color3: #003566;
+    --color4: #FFC300;
+    --color5: #FFD60A;
+    --color6: #DEE2E6;
+}  
 
 *,
 *::before,
@@ -24,7 +18,8 @@
 }
 
 body {
-    background-color: var(--background-color);
+    background-color: var(--color6);
+    color: var(--color1);
     font-size: var(--font-size-base);
     line-height: 1.5;
 }

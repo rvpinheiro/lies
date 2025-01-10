@@ -1,0 +1,9 @@
+.header {
+    display: flex;
+    justify-content: center;
+}
+
+.authButtons {
+    display: flex;
+    gap: 30px;
+}

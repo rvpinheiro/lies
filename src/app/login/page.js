@@ -23,35 +23,40 @@ const Login = () => {
         }
     };
 
-
     const handleBack = () => {
-        router.push("/");
+        router.push("/");  // Voltar à página inicial
     };
 
     return (
         <div className={styles.container}>
-            <h2>Login</h2>
-            {error && <p className={styles.error}>{error}</p>}
-            <form onSubmit={handleLogin}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button type="submit">Entrar</button>
-            </form>
-            <button className={styles.backButton} onClick={handleBack}>
-                Voltar à Página Inicial
-            </button>
+            <div className={styles.form}>
+                <h2 className={styles.title}>Entrar</h2>
+                {error && <p className={styles.error}>{error}</p>}
+                <form onSubmit={handleLogin} className={styles.formContent}>
+                    <div className={styles.inputWrapper}>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                    </div>
+                    <div className={styles.inputWrapper}>
+                        <input
+                            type="password"
+                            placeholder="Senha"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                    </div>
+                    <button type="submit" className={styles.submitButton}>Entrar</button>
+                </form>
+                <button className={styles.backButton} onClick={handleBack}>Voltar à Página Inicial</button>
+            </div>
         </div>
     );
 };

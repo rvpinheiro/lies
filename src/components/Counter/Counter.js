@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { database, ref, set, get } from "@/firebase/firebaseConfig";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import styles from './Counter.module.css'
+import { useRouter } from 'next/navigation';
+import styles from './Counter.module.css';
 import Button from "../Button/Button";
 import Form from "../Form/Form";
 
@@ -13,6 +14,7 @@ const Counter = () => {
     const [showForm, setShowForm] = useState(false);
     const [maxTimeWithoutLie, setMaxTimeWithoutLie] = useState(0);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         const counterRef = ref(database, 'counter/time');
@@ -98,6 +100,10 @@ const Counter = () => {
         setElapsedTime(0);
     };
 
+    const goToLiesPage = () => {
+        router.push('/alllies');
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.counterText}>
@@ -110,8 +116,12 @@ const Counter = () => {
             </div>
             <div className={styles.buttonContainer}>
                 {isLoggedIn && !showForm && (
-                    <Button text="Inserir mentira" onClick={toggleForm} />
+                    <>
+                        <Button text="Inserir mentira" onClick={toggleForm} />
+
+                    </>
                 )}
+                <Button text="Ver todas as mentiras" onClick={goToLiesPage} />
             </div>
             {showForm && <Form onClose={toggleForm} onSubmit={handleFormSubmit} />}
         </div>
