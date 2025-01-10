@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
 import { useRouter } from "next/navigation";
 import styles from './page.module.css';
 
 const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [name, setName] = useState(""); // Campo para o nome
     const [errorMessage, setErrorMessage] = useState("");  // Estado para armazenar a mensagem de erro
     const router = useRouter();
 
@@ -18,16 +16,8 @@ const Register = () => {
         const auth = getAuth();
 
         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-
-                // Após criar o utilizador, guardar o nome na base de dados
-                const db = getDatabase();
-                set(ref(db, 'users/' + user.uid), {
-                    name: name,
-                    email: email
-                });
-
+            .then(() => {
+                // Redirecionar para a página principal após o registo
                 router.push("/");
             })
             .catch((error) => {
@@ -61,14 +51,6 @@ const Register = () => {
             <div className={styles.form}>
                 <h2 className={styles.title}>Registar</h2>
                 <form onSubmit={handleRegister} className={styles.formContent}>
-                    <input
-                        type="text"
-                        placeholder="Nome"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                        className={styles.input}
-                    />
                     <input
                         type="email"
                         placeholder="Email"
