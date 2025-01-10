@@ -1,3 +1,4 @@
+/* Estilo geral da página */
 .adminPageContainer {
     padding: 40px;
     background-color: #f9f9f9;
@@ -8,6 +9,7 @@
     min-height: 100vh;
 }
 
+/* Botão Voltar */
 .goBackButton {
     padding: 12px 20px;
     background-color: #007BFF;
@@ -25,6 +27,7 @@
     background-color: #0056b3;
 }
 
+/* Container para Adicionar Utilizador */
 .addUserContainer {
     background-color: #fff;
     padding: 15px;
@@ -42,6 +45,7 @@
     color: #444;
 }
 
+/* Campo de Input */
 .inputField {
     display: flex;
     flex-direction: column;
@@ -55,19 +59,23 @@
 }
 
 .inputField input {
-    padding: 10px;
+    padding: 12px 15px;
     font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
     outline: none;
-    transition: border-color 0.3s ease;
     background-color: #fafafa;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Efeito de Foco Moderno */
 .inputField input:focus {
     border-color: #4CAF50;
+    box-shadow: 0 0 10px rgba(0, 180, 0, 0.5);
 }
 
+/* Botão de Adicionar Utilizador */
 .addUserButton {
     padding: 10px 20px;
     background-color: #4CAF50;
@@ -86,6 +94,7 @@
     background-color: #45a049;
 }
 
+/* Estilo da Tabela de Utilizadores */
 .usersTable {
     width: 100%;
     max-width: 900px;
@@ -121,6 +130,7 @@
     font-weight: 500;
 }
 
+/* Botões de Ação */
 .removeUserButton {
     padding: 6px 12px;
     background-color: #f44336;
@@ -137,11 +147,48 @@
     background-color: #d32f2f;
 }
 
+/* Container dos Botões de Ação */
 .buttons {
     display: flex;
     gap: 20px;
 }
 
+/* Estilo para Botão de Editar */
+.usersTable .editButton {
+    padding: 6px 12px;
+    background-color: #ff9800;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.usersTable .editButton:hover {
+    background-color: #e68900;
+}
+
+/* Input de Edição */
+.usersTable input[type="text"] {
+    padding: 10px;
+    font-size: 1rem;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #f4fdf4;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Efeito de foco para o input em edição */
+.usersTable input[type="text"]:focus {
+    border-color: #66bb6a;
+    box-shadow: 0 0 8px rgba(0, 180, 0, 0.5);
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
     .adminPageContainer {
         padding: 20px;

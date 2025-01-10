@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 const AdminPage = () => {
     const [users, setUsers] = useState([]);
     const [newUserName, setNewUserName] = useState("");
+    const [editingUser, setEditingUser] = useState(null); // Para controlar o utilizador em edição
+    const [editedName, setEditedName] = useState(""); // Para armazenar o nome editado
     const router = useRouter();
 
     const fetchUsers = async () => {
@@ -87,6 +89,15 @@ const AdminPage = () => {
         fetchUsers();
     };
 
+    const editUserName = async (uid, newName) => {
+        const userRef = ref(database, `users/${uid}`);
+        await update(userRef, {
+            name: newName
+        });
+        setEditingUser(null); // Remove o estado de edição
+        fetchUsers(); // Atualiza a lista de utilizadores
+    };
+
     useEffect(() => {
         fetchUsers();
     }, []);
@@ -127,7 +138,17 @@ const AdminPage = () => {
                 <tbody>
                     {users.map(user => (
                         <tr key={user.uid}>
-                            <td>{user.name}</td>
+                            <td>
+                                {editingUser === user.uid ? (
+                                    <input
+                                        type="text"
+                                        value={editedName}
+                                        onChange={(e) => setEditedName(e.target.value)}
+                                    />
+                                ) : (
+                                    user.name
+                                )}
+                            </td>
                             <td>{user.liesCount}</td>
                             <td className={styles.buttons}>
                                 <button
@@ -142,11 +163,24 @@ const AdminPage = () => {
                                 >
                                     Eliminar Mentiras
                                 </button>
-                                {/* <button className={styles.removeUserButton}
-                                    onClick={() => toggleUserStatus(user.uid, user.isActive)}
-                                >
-                                    {user.isActive ? "Tornar Inativo" : "Tornar Ativo"}
-                                </button> */}
+                                {editingUser === user.uid ? (
+                                    <button
+                                        className={styles.removeUserButton}
+                                        onClick={() => editUserName(user.uid, editedName)}
+                                    >
+                                        Salvar
+                                    </button>
+                                ) : (
+                                    <button
+                                        className={styles.removeUserButton}
+                                        onClick={() => {
+                                            setEditingUser(user.uid);
+                                            setEditedName(user.name);
+                                        }}
+                                    >
+                                        Editar
+                                    </button>
+                                )}
                             </td>
                         </tr>
                     ))}

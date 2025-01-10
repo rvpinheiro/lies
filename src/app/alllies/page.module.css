@@ -1,7 +1,6 @@
-/* Estilo geral da página */
 .liesPageContainer {
     padding: 40px;
-    background-color: #f9f9f9; /* Fundo claro */
+    background-color: #f9f9f9; 
     font-family: 'Roboto', sans-serif;
     display: flex;
     flex-direction: column;
@@ -9,7 +8,6 @@
     min-height: 100vh;
 }
 
-/* Botão de voltar */
 .backButton {
     padding: 12px 20px;
     background-color: #4CAF50;
@@ -27,7 +25,6 @@
     background-color: #45a049;
 }
 
-/* Lista de mentiras (sem caixa de fundo) */
 .liesList {
     width: 100%;
     max-width: 1000px;
@@ -35,14 +32,12 @@
 
 }
 
-/* Contêiner de cada utilizador */
 .userLiesContainer {
     margin-bottom: 30px;
     padding-bottom: 20px;
-    border-bottom: 2px solid #ddd; /* Linha de separação entre utilizadores */
+    border-bottom: 2px solid #ddd; 
 }
 
-/* Nome do utilizador e contagem de mentiras */
 .userLiesContainer h2 {
     font-size: 1.4rem;
     font-weight: 500;
@@ -50,40 +45,27 @@
     margin-bottom: 15px;
 }
 
-/* Mentira (sem fundo, sem borda) */
 .lieItem {
     font-size: 1rem;
     color: #555;
     margin-bottom: 15px;
     line-height: 1.6;
+    text-align: justify;
 }
 
-/* Data da mentira */
 .lieItem small {
     font-size: 0.9rem;
+    font-weight: bold;
     color: #888;
     display: block;
     margin-top: 5px;
 }
 
-/* Mensagem quando o utilizador não tem mentiras */
 .noLies {
     color: #777;
-    font-style: italic;
-    text-align: center;
     font-size: 1.1rem;
 }
 
-/* Mensagem geral quando não há mentiras */
-.noLiesMessage {
-    font-size: 1.3rem;
-    color: #444;
-    text-align: center;
-    margin-top: 50px;
-    font-weight: 500;
-}
-
-/* Responsividade */
 @media (max-width: 768px) {
 
     .userLiesContainer h2 {
