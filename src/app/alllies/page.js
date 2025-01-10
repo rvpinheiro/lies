@@ -68,7 +68,6 @@ const LiesPage = () => {
     };
 
 
-    // Função para retornar a forma correta de "mentira(s)" no singular/plural
     const getLieLabel = (count) => {
         return count === 1 ? 'mentira' : 'mentiras';
     };
