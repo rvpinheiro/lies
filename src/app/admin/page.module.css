@@ -28,11 +28,10 @@
     background-color: #0056b3;
 }
 
-/* Formulário de adicionar utilizador */
 .addUserContainer {
     background-color: #fff;
     padding: 15px;
-    margin-bottom: 30px;
+    margin: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
@@ -142,6 +141,11 @@
     background-color: #d32f2f;
 }
 
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .adminPageContainer {
@@ -164,3 +168,4 @@
         font-size: 0.9rem;
     }
 }
+
