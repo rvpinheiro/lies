@@ -1,17 +1,16 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getDatabase, ref, get, set, remove } from "firebase/database";  // Funções do Firebase Realtime Database
-import { database } from "@/firebase/firebaseConfig";  // Importação da configuração do Firebase
-import styles from './page.module.css';  // Importação das classes de CSS modules
-import { useRouter } from 'next/navigation';  // Hook para navegação entre páginas
+import { ref, get, set, remove, update } from "firebase/database";
+import { database } from "@/firebase/firebaseConfig";
+import styles from './page.module.css';
+import { useRouter } from 'next/navigation';
 
 const AdminPage = () => {
     const [users, setUsers] = useState([]);
-    const [newUserName, setNewUserName] = useState("");  // Nome do novo utilizador
-    const router = useRouter();  // Hook para redirecionamento
+    const [newUserName, setNewUserName] = useState("");
+    const router = useRouter();
 
-    // Função para listar os utilizadores existentes
     const fetchUsers = async () => {
         const usersRef = ref(database, 'users');
         const snapshot = await get(usersRef);
@@ -22,11 +21,23 @@ const AdminPage = () => {
                 usersList.push({
                     uid: childSnapshot.key,
                     name: userData.name,
-                    liesCount: userData.liesCount,  // Número de mentiras
+                    liesCount: userData.liesCount,
                 });
             });
             setUsers(usersList);
         }
+    };
+
+    // Função para reiniciar o "counter" (global)
+    const resetCounter = async () => {
+        const counterRef = ref(database, 'counter');
+        const newTime = Date.now();
+        await update(counterRef, {
+            maxTimeWithoutLie: 0,
+            time: newTime,
+        });
+
+        alert("Contadores reiniciados com sucesso!");
     };
 
     // Função para adicionar um novo utilizador
@@ -36,49 +47,57 @@ const AdminPage = () => {
             return;
         }
 
-        const newUserId = `user_${Date.now()}`;  // Gera um ID único para o utilizador
-        const userRef = ref(database, 'users/' + newUserId);  // Caminho onde o utilizador será guardado
+        const newUserId = `user_${Date.now()}`;
+        const userRef = ref(database, 'users/' + newUserId);
 
-        // Adiciona o utilizador com o nome, inicializa o número de mentiras em 0 e cria o subnó "lies"
         await set(userRef, {
             name: newUserName,
-            liesCount: 0,  // Número de mentiras começa em 0
-            lies: {},  // O subnó "lies" começa vazio (sem mentiras)
+            liesCount: 0,
+            lies: {},
         });
 
-        // Limpa o campo de nome
         setNewUserName("");
-
-        // Atualiza a lista de utilizadores
         fetchUsers();
     };
 
     // Função para remover um utilizador
     const removeUser = async (uid) => {
         const userRef = ref(database, `users/${uid}`);
-        await remove(userRef);  // Remove o utilizador do Firebase
-
-        // Atualiza a lista de utilizadores após remoção
+        await remove(userRef);
         fetchUsers();
     };
 
+    // Função para eliminar as mentiras de um utilizador
+    const resetLies = async (uid) => {
+        const userRef = ref(database, `users/${uid}`);
+
+        // Define o contador de mentiras a 0 e apaga as mentiras associadas
+        await update(userRef, {
+            liesCount: 0,
+            lies: {},  // Apaga todas as mentiras
+        });
+
+        alert("Mentiras do utilizador apagadas com sucesso!");
+        fetchUsers();  // Atualiza a lista de utilizadores
+    };
+
     useEffect(() => {
-        fetchUsers();  // Carrega a lista de utilizadores quando a página carrega
+        fetchUsers();
     }, []);
 
-    // Função para voltar à página inicial
     const handleGoBack = () => {
-        router.push('/');  // Redireciona para a página inicial
+        router.push('/');
     };
 
     return (
         <div className={styles.adminPageContainer}>
             <h1>Página de Administração</h1>
-
-            {/* Botão para voltar à página inicial */}
             <button className={styles.goBackButton} onClick={handleGoBack}>Voltar à Página Inicial</button>
-
-            {/* Formulário para adicionar novo utilizador */}
+            <div className={styles.resetCounterContainer}>
+                <button className={styles.addUserButton} onClick={resetCounter}>
+                    Reiniciar Contadores
+                </button>
+            </div>
             <div className={styles.addUserContainer}>
                 <h2>Adicionar Novo Utilizador</h2>
                 <div className={styles.inputField}>
@@ -91,14 +110,12 @@ const AdminPage = () => {
                 </div>
                 <button className={styles.addUserButton} onClick={addUser}>Adicionar Utilizador</button>
             </div>
-
-            {/* Tabela de utilizadores */}
             <table className={styles.usersTable}>
                 <thead>
                     <tr>
                         <th>Nome</th>
                         <th>Número de Mentiras</th>
-                        <th>Acções</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,12 +123,18 @@ const AdminPage = () => {
                         <tr key={user.uid}>
                             <td>{user.name}</td>
                             <td>{user.liesCount}</td>
-                            <td>
+                            <td className={styles.buttons}>
                                 <button
                                     className={styles.removeUserButton}
                                     onClick={() => removeUser(user.uid)}
                                 >
                                     Remover
+                                </button>
+                                <button
+                                    className={styles.removeUserButton}
+                                    onClick={() => resetLies(user.uid)}
+                                >
+                                    Eliminar Mentiras
                                 </button>
                             </td>
                         </tr>
