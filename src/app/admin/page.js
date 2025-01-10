@@ -127,65 +127,56 @@ const AdminPage = () => {
                 </div>
                 <button className={styles.addUserButton} onClick={addUser}>Adicionar Utilizador</button>
             </div>
-            <table className={styles.usersTable}>
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Número de Mentiras</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map(user => (
-                        <tr key={user.uid}>
-                            <td>
-                                {editingUser === user.uid ? (
-                                    <input
-                                        type="text"
-                                        value={editedName}
-                                        onChange={(e) => setEditedName(e.target.value)}
-                                    />
-                                ) : (
-                                    user.name
-                                )}
-                            </td>
-                            <td>{user.liesCount}</td>
-                            <td className={styles.buttons}>
+            <div className={styles.usersContainer}>
+                {users.map(user => (
+                    <div key={user.uid} className={styles.userCard}>
+                        <h3>
+                            {editingUser === user.uid ? (
+                                <input
+                                    type="text"
+                                    value={editedName}
+                                    onChange={(e) => setEditedName(e.target.value)}
+                                />
+                            ) : (
+                                user.name
+                            )}
+                        </h3>
+                        <p>Mentiras: {user.liesCount}</p>
+                        <div className={styles.buttons}>
+                            <button
+                                className={styles.removeUserButton}
+                                onClick={() => removeUser(user.uid)}
+                            >
+                                Remover
+                            </button>
+                            <button
+                                className={styles.removeUserButton}
+                                onClick={() => resetLies(user.uid)}
+                            >
+                                Eliminar Mentiras
+                            </button>
+                            {editingUser === user.uid ? (
                                 <button
                                     className={styles.removeUserButton}
-                                    onClick={() => removeUser(user.uid)}
+                                    onClick={() => editUserName(user.uid, editedName)}
                                 >
-                                    Remover
+                                    Salvar
                                 </button>
+                            ) : (
                                 <button
-                                    className={styles.removeUserButton}
-                                    onClick={() => resetLies(user.uid)}
+                                    className={styles.editUserButton}
+                                    onClick={() => {
+                                        setEditingUser(user.uid);
+                                        setEditedName(user.name);
+                                    }}
                                 >
-                                    Eliminar Mentiras
+                                    Editar
                                 </button>
-                                {editingUser === user.uid ? (
-                                    <button
-                                        className={styles.removeUserButton}
-                                        onClick={() => editUserName(user.uid, editedName)}
-                                    >
-                                        Salvar
-                                    </button>
-                                ) : (
-                                    <button
-                                        className={styles.removeUserButton}
-                                        onClick={() => {
-                                            setEditingUser(user.uid);
-                                            setEditedName(user.name);
-                                        }}
-                                    >
-                                        Editar
-                                    </button>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
