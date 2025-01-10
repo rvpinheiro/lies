@@ -11,32 +11,31 @@ const Ranking = () => {
 
     useEffect(() => {
         const db = getDatabase();
-        const usersRef = ref(db, "users");  // Escutar o nó de utilizadores
+        const usersRef = ref(db, "users");
 
         const updateRanking = (usersSnapshot) => {
             const liarCounts = [];
             usersSnapshot.forEach((userSnapshot) => {
                 const userData = userSnapshot.val();
-                const liar = userData.name;
-                const liesCount = userData.liesCount || 0;  // Pega a contagem de mentiras (se existir)
-                liarCounts.push({ liar, count: liesCount });
+
+                if (userData.isActive) {
+                    const liar = userData.name;
+                    const liesCount = userData.liesCount || 0;
+                    liarCounts.push({ liar, count: liesCount });
+                }
             });
 
-            // Ordenar pelo número de mentiras de forma decrescente
             const sortedLiarCounts = liarCounts.sort((a, b) => b.count - a.count);
 
             setRanking(sortedLiarCounts);
         };
 
-        // Escutar mudanças no nó de utilizadores
         onValue(usersRef, updateRanking);
 
         return () => {
-            // Limpeza dos listeners, caso necessário
         };
     }, []);
 
-    // Encontra o número máximo de mentiras
     const maxLies = ranking.length > 0 ? ranking[0].count : 0;
 
     return (
@@ -51,7 +50,6 @@ const Ranking = () => {
                             key={index}
                             className={`${styles.rankingItem} ${item.count === maxLies && item.count !== 0 ? styles.firstPlace : ''}`}
                         >
-                            {/* Mostrar a taça para o maior número de mentiras, excluindo quem tem 0 */}
                             {item.count === maxLies && item.count !== 0 && (
                                 <FontAwesomeIcon icon={faTrophy} className={styles.trophy} />
                             )}

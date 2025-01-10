@@ -9,7 +9,7 @@ import { auth } from '@/firebase/firebaseConfig';
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
 
     const handleLogin = async (e) => {
@@ -17,9 +17,31 @@ const Login = () => {
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            router.push("/"); // Redireciona para a página inicial após login bem-sucedido
+            router.push("/");
         } catch (err) {
-            setError(err.message);  // Definir erro caso ocorra
+            let customMessage = "Erro desconhecido.";
+
+            switch (err.code) {
+                case 'auth/invalid-email':
+                    customMessage = "O email fornecido não é válido.";
+                    break;
+                case 'auth/user-disabled':
+                    customMessage = "A conta foi desativada.";
+                    break;
+                case 'auth/user-not-found':
+                    customMessage = "Nenhum utilizador encontrado com este email.";
+                    break;
+                case 'auth/wrong-password':
+                    customMessage = "A senha está incorreta.";
+                    break;
+                case 'auth/invalid-credential':
+                    customMessage = "Credenciais inválidas.";
+                    break;
+                default:
+                    customMessage = err.message;
+            }
+
+            setErrorMessage(customMessage);
         }
     };
 
@@ -31,7 +53,6 @@ const Login = () => {
         <div className={styles.container}>
             <div className={styles.form}>
                 <h2 className={styles.title}>Entrar</h2>
-                {error && <p className={styles.error}>{error}</p>}
                 <form onSubmit={handleLogin} className={styles.formContent}>
                     <div className={styles.inputWrapper}>
                         <input
@@ -54,8 +75,9 @@ const Login = () => {
                         />
                     </div>
                     <button type="submit" className={styles.submitButton}>Entrar</button>
+                    <button className={styles.backButton} onClick={handleBack}>Voltar à Página Inicial</button>
                 </form>
-                <button className={styles.backButton} onClick={handleBack}>Voltar à Página Inicial</button>
+                {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}  {/* Exibe a mensagem de erro */}
             </div>
         </div>
     );

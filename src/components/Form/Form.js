@@ -3,16 +3,15 @@
 import { useEffect, useState } from "react";
 import { getDatabase, ref, set, get, update } from "firebase/database";
 import { database } from "@/firebase/firebaseConfig";
-import styles from './Form.module.css';  // Importar os estilos
+import styles from './Form.module.css';
 import Button from "../Button/Button";
 
 const Form = ({ onClose, onSubmit }) => {
-    const [liar, setLiar] = useState("");  // O utilizador selecionado
-    const [lie, setLie] = useState("");    // A mentira a ser inserida
-    const [users, setUsers] = useState([]); // Lista de utilizadores
-    const [successMessage, setSuccessMessage] = useState(""); // Mensagem de sucesso
+    const [liar, setLiar] = useState("");
+    const [lie, setLie] = useState("");
+    const [users, setUsers] = useState([]);
+    const [successMessage, setSuccessMessage] = useState("");
 
-    // Buscar utilizadores no Firebase
     useEffect(() => {
         const fetchUsers = async () => {
             const usersRef = ref(database, 'users');
@@ -40,7 +39,6 @@ const Form = ({ onClose, onSubmit }) => {
         if (liar && lie) {
             const userRef = ref(database, 'users/' + liar);
 
-            // Registar a mentira no subnó "lies" do utilizador
             const newLieRef = ref(database, `users/${liar}/lies/lie_${Date.now()}`);
             const newLie = {
                 lie: lie,
@@ -51,7 +49,6 @@ const Form = ({ onClose, onSubmit }) => {
             const userSnapshot = await get(userRef);
             const currentLiesCount = userSnapshot.exists() ? userSnapshot.val().liesCount || 0 : 0;
 
-            // Atualiza o contador de mentiras
             await update(userRef, {
                 liesCount: currentLiesCount + 1,
             });
@@ -59,14 +56,12 @@ const Form = ({ onClose, onSubmit }) => {
             setLiar("");
             setLie("");
 
-            // Exibir a mensagem de sucesso
             setSuccessMessage("Mentira adicionada!");
 
-            // Fechar o formulário após 2 segundos
             setTimeout(() => {
                 onSubmit();
                 onClose();
-                setSuccessMessage(""); // Limpar a mensagem após fechar
+                setSuccessMessage("");
             }, 2000);
         }
     };
@@ -109,7 +104,6 @@ const Form = ({ onClose, onSubmit }) => {
                     <Button text="Fechar" onClick={onClose} />
                 </div>
 
-                {/* Exibir a mensagem de sucesso se existir */}
                 {successMessage && (
                     <div className={styles.successMessage}>{successMessage}</div>
                 )}

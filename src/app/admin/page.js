@@ -22,13 +22,13 @@ const AdminPage = () => {
                     uid: childSnapshot.key,
                     name: userData.name,
                     liesCount: userData.liesCount,
+                    isActive: userData.isActive,
                 });
             });
             setUsers(usersList);
         }
     };
 
-    // Função para reiniciar o "counter" (global)
     const resetCounter = async () => {
         const counterRef = ref(database, 'counter');
         const newTime = Date.now();
@@ -40,7 +40,6 @@ const AdminPage = () => {
         alert("Contadores reiniciados com sucesso!");
     };
 
-    // Função para adicionar um novo utilizador
     const addUser = async () => {
         if (!newUserName) {
             alert("Por favor, preencha o nome do utilizador!");
@@ -54,31 +53,38 @@ const AdminPage = () => {
             name: newUserName,
             liesCount: 0,
             lies: {},
+            isActive: true,
         });
 
         setNewUserName("");
         fetchUsers();
     };
 
-    // Função para remover um utilizador
     const removeUser = async (uid) => {
         const userRef = ref(database, `users/${uid}`);
         await remove(userRef);
         fetchUsers();
     };
 
-    // Função para eliminar as mentiras de um utilizador
     const resetLies = async (uid) => {
         const userRef = ref(database, `users/${uid}`);
 
-        // Define o contador de mentiras a 0 e apaga as mentiras associadas
         await update(userRef, {
             liesCount: 0,
-            lies: {},  // Apaga todas as mentiras
+            lies: {},
         });
 
         alert("Mentiras do utilizador apagadas com sucesso!");
-        fetchUsers();  // Atualiza a lista de utilizadores
+        fetchUsers();
+    };
+
+    const toggleUserStatus = async (uid, isActive) => {
+        const userRef = ref(database, `users/${uid}`);
+        await update(userRef, {
+            isActive: !isActive,
+        });
+
+        fetchUsers();
     };
 
     useEffect(() => {
@@ -136,6 +142,11 @@ const AdminPage = () => {
                                 >
                                     Eliminar Mentiras
                                 </button>
+                                {/* <button className={styles.removeUserButton}
+                                    onClick={() => toggleUserStatus(user.uid, user.isActive)}
+                                >
+                                    {user.isActive ? "Tornar Inativo" : "Tornar Ativo"}
+                                </button> */}
                             </td>
                         </tr>
                     ))}

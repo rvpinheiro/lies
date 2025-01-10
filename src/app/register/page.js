@@ -10,6 +10,7 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState(""); // Campo para o nome
+    const [errorMessage, setErrorMessage] = useState("");  // Estado para armazenar a mensagem de erro
     const router = useRouter();
 
     const handleRegister = (e) => {
@@ -27,10 +28,27 @@ const Register = () => {
                     email: email
                 });
 
-                router.push("/"); // Redirecionar para login após o registo
+                router.push("/");
             })
             .catch((error) => {
-                console.error("Erro ao registar:", error.message);
+                let customMessage = "Erro desconhecido.";
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        customMessage = "O email fornecido não é válido.";
+                        break;
+                    case 'auth/email-already-in-use':
+                        customMessage = "Este email já está em uso.";
+                        break;
+                    case 'auth/weak-password':
+                        customMessage = "A senha deve ter pelo menos 6 caracteres.";
+                        break;
+                    case 'auth/invalid-credential':
+                        customMessage = "Credenciais inválidas. Verifica os dados e tenta novamente.";
+                        break;
+                    default:
+                        customMessage = error.message;
+                }
+                setErrorMessage(customMessage);
             });
     };
 
@@ -70,6 +88,7 @@ const Register = () => {
                     <button type="submit" className={styles.submitButton}>Registar</button>
                     <button type="button" className={styles.backButton} onClick={handleBack}>Voltar à Página Inicial</button>
                 </form>
+                {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
             </div>
         </div>
     );

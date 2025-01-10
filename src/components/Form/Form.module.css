@@ -126,8 +126,7 @@
 .successMessage {
   margin-top: 20px;
   padding: 10px;
-  background-color: #4caf50;
-  color: white;
+  color: #4caf50;
   border-radius: 5px;
   font-size: 1.1rem;
   font-weight: bold;
