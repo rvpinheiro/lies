@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import styles from './page.module.css';
 import { auth } from '@/firebase/firebaseConfig';
 
@@ -10,6 +12,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [passwordVisible, setPasswordVisible] = useState(false);
     const router = useRouter();
 
     const handleLogin = async (e) => {
@@ -46,7 +49,11 @@ const Login = () => {
     };
 
     const handleBack = () => {
-        router.push("/");  // Voltar à página inicial
+        router.push("/");
+    };
+
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
     };
 
     return (
@@ -64,18 +71,23 @@ const Login = () => {
                             className={styles.input}
                         />
                     </div>
-                    <div className={styles.inputWrapper}>
+                    <div className={styles.passwordContainer}>
                         <input
-                            type="password"
+                            type={passwordVisible ? "text" : "password"}
                             placeholder="Senha"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             className={styles.input}
                         />
+                        <FontAwesomeIcon
+                            icon={passwordVisible ? faEyeSlash : faEye}
+                            onClick={togglePasswordVisibility}
+                            className={styles.eyeIcon}
+                        />
                     </div>
                     <button type="submit" className={styles.submitButton}>Entrar</button>
-                    <button className={styles.backButton} onClick={handleBack}>Voltar à Página Inicial</button>
+                    <button type="button" className={styles.backButton} onClick={handleBack}>Voltar à Página Inicial</button>
                 </form>
                 {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}  {/* Exibe a mensagem de erro */}
             </div>

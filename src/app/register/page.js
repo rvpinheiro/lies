@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import styles from './page.module.css';
 
 const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");  // Estado para armazenar a mensagem de erro
+    const [errorMessage, setErrorMessage] = useState("");
+    const [passwordVisible, setPasswordVisible] = useState(false);
     const router = useRouter();
 
     const handleRegister = (e) => {
@@ -17,7 +20,6 @@ const Register = () => {
 
         createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
-                // Redirecionar para a página principal após o registo
                 router.push("/");
             })
             .catch((error) => {
@@ -43,7 +45,11 @@ const Register = () => {
     };
 
     const handleBack = () => {
-        router.push("/");  // Voltar à página inicial
+        router.push("/");
+    };
+
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
     };
 
     return (
@@ -59,14 +65,21 @@ const Register = () => {
                         required
                         className={styles.input}
                     />
-                    <input
-                        type="password"
-                        placeholder="Senha"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className={styles.input}
-                    />
+                    <div className={styles.passwordContainer}>
+                        <input
+                            type={passwordVisible ? "text" : "password"}
+                            placeholder="Senha"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                        <FontAwesomeIcon
+                            icon={passwordVisible ? faEyeSlash : faEye}
+                            onClick={togglePasswordVisibility}
+                            className={styles.eyeIcon}
+                        />
+                    </div>
                     <button type="submit" className={styles.submitButton}>Registar</button>
                     <button type="button" className={styles.backButton} onClick={handleBack}>Voltar à Página Inicial</button>
                 </form>

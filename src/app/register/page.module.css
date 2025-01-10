@@ -85,6 +85,34 @@
     background-color: #e0e0e0;
 }
 
+.passwordContainer {
+    position: relative;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    padding-right: 30px; /* Deixar espaço para o ícone */
+    box-sizing: border-box;
+}
+
+.eyeIcon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+}
+
+.submitButton, .backButton {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 /* Responsividade */
 @media (max-width: 480px) {
     .form {
