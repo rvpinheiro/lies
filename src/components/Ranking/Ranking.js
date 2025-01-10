@@ -24,6 +24,7 @@ const Ranking = () => {
 
             // Ordenar pelo número de mentiras de forma decrescente
             const sortedLiarCounts = liarCounts.sort((a, b) => b.count - a.count);
+
             setRanking(sortedLiarCounts);
         };
 
@@ -31,7 +32,7 @@ const Ranking = () => {
         onValue(usersRef, updateRanking);
 
         return () => {
-            // Clean up listeners
+            // Limpeza dos listeners, caso necessário
         };
     }, []);
 
@@ -42,22 +43,26 @@ const Ranking = () => {
         <div className={styles.rankingContainer}>
             <div className={styles.title}>Ranking de Mentirosos</div>
             <ul className={styles.rankingList}>
-                {ranking.map((item, index) => (
-                    <li
-                        key={index}
-                        className={`${styles.rankingItem} ${item.count === maxLies ? styles.firstPlace : ''}`}
-                    >
-                        {/* Mostrar a taça para todos os que tiverem o maior número de mentiras */}
-                        {item.count === maxLies && (
-                            <FontAwesomeIcon icon={faTrophy} className={styles.trophy} />
-                        )}
-                        <span className={styles.position}>{index + 1}</span>
-                        <span className={styles.name}>{item.liar}</span>
-                        <span className={styles.count}>
-                            {item.count} {item.count === 1 ? 'mentira' : 'mentiras'}
-                        </span>
-                    </li>
-                ))}
+                {ranking.length === 0 ? (
+                    <li className={styles.noData}>Nenhum dado de mentiras disponível.</li>
+                ) : (
+                    ranking.map((item, index) => (
+                        <li
+                            key={index}
+                            className={`${styles.rankingItem} ${item.count === maxLies && item.count !== 0 ? styles.firstPlace : ''}`}
+                        >
+                            {/* Mostrar a taça para o maior número de mentiras, excluindo quem tem 0 */}
+                            {item.count === maxLies && item.count !== 0 && (
+                                <FontAwesomeIcon icon={faTrophy} className={styles.trophy} />
+                            )}
+                            <span className={styles.position}>{index + 1}</span>
+                            <span className={styles.name}>{item.liar}</span>
+                            <span className={styles.count}>
+                                {item.count} {item.count === 1 ? 'mentira' : 'mentiras'}
+                            </span>
+                        </li>
+                    ))
+                )}
             </ul>
         </div>
     );
