@@ -35,6 +35,9 @@ const LiesPage = () => {
                         });
                     });
 
+                    // Ordenar as mentiras por timestamp, da mais recente para a mais antiga
+                    allLies[userId].lies.sort((a, b) => b.timestamp - a.timestamp);
+
                     allLies[userId].liesCount = allLies[userId].lies.length;
                 }
             });
@@ -59,7 +62,6 @@ const LiesPage = () => {
         return `${day}/${month}/${year} ${hours}:${minutes}`;
     };
 
-
     const getLieLabel = (count) => {
         return count === 1 ? 'mentira' : 'mentiras';
     };
@@ -68,7 +70,7 @@ const LiesPage = () => {
         .sort((a, b) => a[1].userName.localeCompare(b[1].userName));
 
     const handleBack = () => {
-        router.push("/");
+        router.push("/"); // Redireciona para a página inicial
     };
 
     return (
@@ -79,7 +81,7 @@ const LiesPage = () => {
                 {sortedUsers.length === 0 ? (
                     <p className={styles.noLiesMessage}>Não há mentiras registadas.</p>
                 ) : (
-                    sortedUsers.map(([userId, userLies], index) => (
+                    sortedUsers.map(([userId, userLies]) => (
                         <div key={userId} className={styles.userLiesContainer}>
                             <h2>{userLies.userName} ({userLies.liesCount} {getLieLabel(userLies.liesCount)})</h2> {/* Nome do utilizador e número de mentiras */}
                             {userLies.lies.length === 0 ? (
