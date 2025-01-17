@@ -82,6 +82,73 @@
     color: red;
 }
 
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px 30px;
+    z-index: 1000;
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+}
+
+.popup p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.popupButtons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.popupButtons button {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.popupButtons button:first-of-type {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.popupButtons button:first-of-type:hover {
+    background-color: #45a049;
+}
+
+.popupButtons button:last-of-type {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.popupButtons button:last-of-type:hover {
+    background-color: #e53935;
+}
+
+.popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
 @media (max-width: 768px) {
 
     .userLiesContainer h2 {

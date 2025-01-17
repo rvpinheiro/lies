@@ -12,6 +12,8 @@ import { faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 const LiesPage = () => {
     const [usersLies, setUsersLies] = useState({});
     const [authUsersCount, setAuthUsersCount] = useState(0);
+    const [showPopup, setShowPopup] = useState(false);
+    const [pendingDislike, setPendingDislike] = useState(null);
     const auth = getAuth();
     const currentUser = auth.currentUser;
     const router = useRouter();
@@ -82,21 +84,75 @@ const LiesPage = () => {
         try {
             const snapshot = await get(lieRef);
             const dislikes = snapshot.val() || {};
+            const isFinalVote = Object.keys(dislikes).length + 1 >= Math.floor(authUsersCount / 2) + 1;
 
             if (dislikes[uid]) {
                 delete dislikes[uid];
+                await update(ref(database), {
+                    [`users/${userId}/lies/${lieId}/dislikes`]: dislikes
+                });
+                fetchLies();
             } else {
-                dislikes[uid] = true;
+                if (isFinalVote) {
+                    setPendingDislike({ userId, lieId });
+                    setShowPopup(true);
+                } else {
+                    dislikes[uid] = true;
+                    await update(ref(database), {
+                        [`users/${userId}/lies/${lieId}/dislikes`]: dislikes
+                    });
+                    fetchLies();
+                }
             }
-
-            await update(ref(database), {
-                [`users/${userId}/lies/${lieId}/dislikes`]: dislikes
-            });
-
-            fetchLies();
         } catch (error) {
             console.error("Erro ao atualizar dislikes:", error);
         }
+    };
+
+    const confirmDislike = async () => {
+        if (pendingDislike) {
+            const { userId, lieId } = pendingDislike;
+            const uid = currentUser.uid;
+            const lieRef = ref(database, `users/${userId}/lies/${lieId}`);
+            const dislikesRef = ref(database, `users/${userId}/lies/${lieId}/dislikes`);
+            const userRef = ref(database, `users/${userId}`);
+
+            try {
+                const snapshot = await get(dislikesRef);
+                const dislikes = snapshot.val() || {};
+
+                dislikes[uid] = true;
+
+                const totalDislikes = Object.keys(dislikes).length;
+                const requiredVotes = Math.floor(authUsersCount / 2) + 1;
+                if (totalDislikes >= requiredVotes) {
+                    const userSnapshot = await get(userRef);
+                    if (userSnapshot.exists()) {
+                        const userData = userSnapshot.val();
+                        const updatedLiesCount = userData.liesCount > 0 ? userData.liesCount - 1 : 0;
+                        await update(ref(database), {
+                            [`users/${userId}/lies/${lieId}`]: null,
+                            [`users/${userId}/liesCount`]: updatedLiesCount,
+                        });
+                    }
+                } else {
+                    await update(ref(database), {
+                        [`users/${userId}/lies/${lieId}/dislikes`]: dislikes,
+                    });
+                }
+
+                fetchLies();
+                setShowPopup(false);
+                setPendingDislike(null);
+            } catch (error) {
+                console.error("Erro ao confirmar dislike:", error);
+            }
+        }
+    };
+
+    const cancelDislike = () => {
+        setShowPopup(false);
+        setPendingDislike(null);
     };
 
     const formatDate = (timestamp) => {
@@ -172,6 +228,19 @@ const LiesPage = () => {
                     ))
                 )}
             </div>
+
+            {showPopup && (
+                <>
+                    <div className={styles.popupOverlay} onClick={cancelDislike}></div>
+                    <div className={styles.popup}>
+                        <p>És o voto final para esta mentira ser eliminada. Tens a certeza?</p>
+                        <div className={styles.popupButtons}>
+                            <button onClick={confirmDislike}>Sim</button>
+                            <button onClick={cancelDislike}>Não</button>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 };
