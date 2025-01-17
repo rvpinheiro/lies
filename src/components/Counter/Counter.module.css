@@ -30,6 +30,26 @@
     gap: 20px;
 }
 
+.monthlyLiar {
+    font-weight: bold;
+    text-align: center;
+    margin: 1rem;
+    padding: 2rem;
+    border: 3px solid transparent;
+    border-image: linear-gradient(to right, #ffcc00, #ff6600) 1;
+    border-radius: 8px; 
+}
+
+.lierMouthTitle {
+    color: red;
+    font-size: 1.5rem;
+}
+
+.liarName {
+    color: red; 
+    font-size: 1.5rem;
+}
+
 @media (max-width: 768px) {
     .counterTime {
         font-size: 2rem;

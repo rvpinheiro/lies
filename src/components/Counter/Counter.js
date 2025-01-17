@@ -14,11 +14,14 @@ const Counter = () => {
     const [showForm, setShowForm] = useState(false);
     const [maxTimeWithoutLie, setMaxTimeWithoutLie] = useState(0);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [monthlyLiars, setMonthlyLiars] = useState([]);
+    const [monthName, setMonthName] = useState("");
     const router = useRouter();
 
     useEffect(() => {
         const counterRef = ref(database, 'counter/time');
         const maxTimeRef = ref(database, 'counter/maxTimeWithoutLie');
+        const usersRef = ref(database, 'users');
         const auth = getAuth();
 
         onAuthStateChanged(auth, (user) => {
@@ -29,6 +32,7 @@ const Counter = () => {
             }
         });
 
+        // Buscar o tempo desde o início
         get(counterRef).then((snapshot) => {
             if (snapshot.exists()) {
                 const savedStartTime = new Date(snapshot.val());
@@ -42,9 +46,53 @@ const Counter = () => {
             }
         });
 
+        // Buscar o tempo máximo sem mentiras
         get(maxTimeRef).then((snapshot) => {
             if (snapshot.exists()) {
                 setMaxTimeWithoutLie(snapshot.val());
+            }
+        });
+
+        // Calcular os mentirosos do mês
+        get(usersRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const users = snapshot.val();
+                let liarsOfTheMonth = [];
+                let maxLiesCount = 0;
+
+                const currentDate = new Date();
+                const currentMonth = currentDate.getMonth();
+                const currentYear = currentDate.getFullYear();
+                const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+                const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+                // Lista dos meses
+                const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+                setMonthName(months[lastMonth]);
+
+                Object.values(users).forEach(user => {
+                    let count = 0;
+
+                    Object.values(user.lies || {}).forEach(lie => {
+                        const lieDate = new Date(lie.timestamp);
+                        const lieMonth = lieDate.getMonth();
+                        const lieYear = lieDate.getFullYear();
+
+                        if (lieMonth === lastMonth && lieYear === lastMonthYear) {
+                            count++;
+                        }
+                    });
+
+                    if (count > maxLiesCount) {
+                        liarsOfTheMonth = [{ name: user.name, count }];
+                        maxLiesCount = count;
+                    } else if (count === maxLiesCount && count > 0) {
+                        liarsOfTheMonth.push({ name: user.name, count });
+                    }
+                });
+
+                setMonthlyLiars(liarsOfTheMonth);
             }
         });
     }, []);
@@ -114,12 +162,31 @@ const Counter = () => {
                 <p>Tempo máximo sem mentiras:</p>
                 <h2>{formatTime(maxTimeWithoutLie)}</h2>
             </div>
+
+            <div className={styles.monthlyLiar}>
+                {monthlyLiars.length > 0 ? (
+                    <>
+                        <p className={styles.lierMouthTitle}>Mentiroso{monthlyLiars.length > 1 ? "s" : ""} do mês de {monthName}:</p>
+                        <p>
+                            {monthlyLiars.map((liar, index) => (
+                                <span key={index}>
+                                    <span className={styles.liarName}>{liar.name}, com {liar.count} mentira{liar.count !== 1 ? "s" : ""}.</span>
+                                    {index < monthlyLiars.length - 1 ? " e " : ""}
+                                </span>
+                            ))}
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <p>Mentiroso do mês de {monthName}:</p>
+                        <p>Ainda sem vencedor.</p>
+                    </>
+                )}
+            </div>
+
             <div className={styles.buttonContainer}>
                 {isLoggedIn && !showForm && (
-                    <>
-                        <Button text="Inserir mentira" onClick={toggleForm} />
-
-                    </>
+                    <Button text="Inserir mentira" onClick={toggleForm} />
                 )}
                 <Button text="Ver todas as mentiras" onClick={goToLiesPage} />
             </div>
