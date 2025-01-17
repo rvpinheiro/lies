@@ -11,6 +11,7 @@ const Form = ({ onClose, onSubmit }) => {
     const [lie, setLie] = useState("");
     const [users, setUsers] = useState([]);
     const [successMessage, setSuccessMessage] = useState("");
+    const [timeoutId, setTimeoutId] = useState(null);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -55,20 +56,27 @@ const Form = ({ onClose, onSubmit }) => {
 
             setLiar("");
             setLie("");
-
             setSuccessMessage("Mentira adicionada!");
-
-            setTimeout(() => {
+            const id = setTimeout(() => {
                 onSubmit();
                 onClose();
                 setSuccessMessage("");
             }, 2000);
+
+            setTimeoutId(id);
         }
+    };
+
+    const handleClose = () => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        onClose();
     };
 
     return (
         <div className={styles.container}>
-            <div className={styles.overlay} onClick={onClose}></div>
+            <div className={styles.overlay} onClick={handleClose}></div>
 
             <form onSubmit={handleSubmit} className={styles.form}>
                 <h2 className={styles.title}>Registar Mentira</h2>
@@ -101,7 +109,7 @@ const Form = ({ onClose, onSubmit }) => {
                 </div>
                 <div className={styles.buttons}>
                     <Button text="Enviar" />
-                    <Button text="Fechar" onClick={onClose} />
+                    <Button text="Fechar" onClick={handleClose} />
                 </div>
 
                 {successMessage && (
