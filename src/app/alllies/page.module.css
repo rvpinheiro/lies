@@ -29,7 +29,6 @@
     width: 100%;
     max-width: 1000px;
     margin-top: 3rem;
-
 }
 
 .userLiesContainer {
@@ -71,6 +70,7 @@
     display: flex;
     gap: 10px;
 }
+
 .dislikeButton {
     font-size: 1.5rem;  
     border: none;
@@ -149,13 +149,53 @@
     z-index: 999;
 }
 
-@media (max-width: 768px) {
+.commentSection {
+    margin-top: 20px;
+    padding-top: 15px;
+}
 
-    .userLiesContainer h2 {
-        font-size: 1.2rem;
-    }
+.commentSection textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+    min-height: 100px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
 
-    .lieItem {
-        font-size: 0.95rem;
-    }
+.commentSection button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 2rem;
+}
+
+.commentSection button:hover {
+    background-color: #45a049;
+}
+
+.comment {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+}
+
+.comment strong {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.comment small {
+    display: block;
+    font-size: 0.85rem;
+    color: #999;
 }

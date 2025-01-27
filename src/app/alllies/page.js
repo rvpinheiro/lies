@@ -14,22 +14,26 @@ const LiesPage = () => {
     const [authUsersCount, setAuthUsersCount] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
     const [pendingDislike, setPendingDislike] = useState(null);
+    const [comments, setComments] = useState({});
+    const [authUsers, setAuthUsers] = useState({}); // Para armazenar os nomes dos utilizadores
     const auth = getAuth();
     const currentUser = auth.currentUser;
     const router = useRouter();
 
     const fetchLies = async () => {
         const usersRef = ref(database, 'users');
-        const authUsersRef = ref(database, 'authUsersCount');
+        const authUsersRef = ref(database, 'authUsers');
+        const authUsersCountRef = ref(database, 'authUsersCount');
 
         try {
-            const [usersSnapshot, authUsersSnapshot] = await Promise.all([
-                get(usersRef),
-                get(authUsersRef)
-            ]);
+            const [usersSnapshot, authUsersSnapshot, authUsersCountSnapshot] = await Promise.all([get(usersRef), get(authUsersRef), get(authUsersCountRef)]);
+
+            if (authUsersCountSnapshot.exists()) {
+                setAuthUsersCount(authUsersCountSnapshot.val());
+            }
 
             if (authUsersSnapshot.exists()) {
-                setAuthUsersCount(authUsersSnapshot.val());
+                setAuthUsers(authUsersSnapshot.val());
             }
 
             if (usersSnapshot.exists()) {
@@ -47,9 +51,7 @@ const LiesPage = () => {
 
                     if (userData.lies) {
                         Object.entries(userData.lies).forEach(([lieId, lieData]) => {
-                            const dislikesCount = lieData.dislikes
-                                ? Object.keys(lieData.dislikes).length
-                                : 0;
+                            const dislikesCount = lieData.dislikes ? Object.keys(lieData.dislikes).length : 0;
 
                             allLies[userId].lies.push({
                                 lieId,
@@ -57,6 +59,7 @@ const LiesPage = () => {
                                 timestamp: lieData.timestamp,
                                 dislikes: lieData.dislikes || {},
                                 dislikesCount,
+                                comments: lieData.comments || {},
                             });
                         });
 
@@ -175,6 +178,35 @@ const LiesPage = () => {
         router.push("/");
     };
 
+    const handleAddComment = async (userId, lieId, commentText) => {
+        if (!currentUser) {
+            alert("Tem de estar autenticado para comentar!");
+            return;
+        }
+
+        const uid = currentUser.uid;
+        const userName = authUsers[uid] || currentUser.displayName || currentUser.email || "Anónimo";
+
+        const commentId = new Date().getTime();
+
+        const commentRef = ref(database, `users/${userId}/lies/${lieId}/comments/${commentId}`);
+
+        const newComment = {
+            userId: uid,
+            userName,
+            comment: commentText,
+            timestamp: Date.now(),
+        };
+
+        try {
+            await update(commentRef, newComment);
+            fetchLies();
+            setComments({ ...comments, [lieId]: '' });
+        } catch (error) {
+            console.error("Erro ao adicionar comentário:", error);
+        }
+    };
+
     const sortedUsers = Object.entries(usersLies)
         .sort((a, b) => a[1].userName.localeCompare(b[1].userName));
 
@@ -220,6 +252,28 @@ const LiesPage = () => {
                                                     </button>
                                                 </div>
                                             )}
+                                            <div className={styles.commentSection}>
+                                                {currentUser && (
+                                                    <>
+                                                        <textarea
+                                                            value={comments[lie.lieId] || ''}
+                                                            onChange={(e) => setComments({ ...comments, [lie.lieId]: e.target.value })}
+                                                        />
+                                                        <button onClick={() => handleAddComment(userId, lie.lieId, comments[lie.lieId])}>
+                                                            Comentar
+                                                        </button>
+                                                    </>
+                                                )}
+                                                {lie.comments && Object.entries(lie.comments)
+                                                    .sort(([, a], [, b]) => b.timestamp - a.timestamp)
+                                                    .map(([commentId, commentData]) => (
+                                                        <div key={commentId} className={styles.comment}>
+                                                            <strong>{commentData.userName}</strong>
+                                                            <p>{commentData.comment}</p>
+                                                            <small>{formatDate(commentData.timestamp)}</small>
+                                                        </div>
+                                                    ))}
+                                            </div>
                                         </div>
                                     );
                                 })
